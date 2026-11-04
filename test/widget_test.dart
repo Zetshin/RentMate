@@ -1,30 +1,83 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:rentmate/main.dart';
+import 'package:rentmate/app/app.dart';
+import 'package:rentmate/features/auth/presentation/login_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Register checks confirmation and returns to Login', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const RentMateApp());
+    await tester.tap(find.text('สมัครสมาชิก'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('register_username')), 'art');
+    await tester.enterText(
+      find.byKey(const Key('register_password')),
+      'password',
+    );
+    await tester.enterText(
+      find.byKey(const Key('register_confirmation')),
+      'different',
+    );
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
+    await tester.tap(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
+    await tester.pumpAndSettle();
+    expect(find.text('รหัสผ่านไม่ตรงกัน'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const Key('register_confirmation')),
+      'password',
+    );
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
+    await tester.tap(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('ข้อมูลผ่านการตรวจสอบแล้ว ยังไม่ได้สร้างบัญชีจริง'),
+      findsOneWidget,
+    );
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('เข้าสู่ระบบ'), findsOneWidget);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('Login validates fields and toggles password', (tester) async {
+    await tester.pumpWidget(const RentMateApp());
+    await tester.tap(find.text('เข้าสู่ระบบ'));
+    await tester.pumpAndSettle();
+    expect(find.text('กรุณากรอกชื่อผู้ใช้'), findsOneWidget);
+    expect(find.text('กรุณากรอกรหัสผ่าน'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('username')), 'art');
+    await tester.enterText(find.byKey(const Key('password')), 'password');
+    await tester.tap(find.byTooltip('แสดงรหัสผ่าน'));
     await tester.pump();
+    expect(find.byTooltip('ซ่อนรหัสผ่าน'), findsOneWidget);
+    await tester.ensureVisible(find.text('เข้าสู่ระบบ'));
+    await tester.tap(find.text('เข้าสู่ระบบ'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('หน้าตัวอย่าง: ยังไม่ได้เชื่อมระบบเข้าสู่ระบบ'),
+      findsOneWidget,
+    );
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Small phone supports large text and keyboard', (tester) async {
+    tester.view.physicalSize = const Size(375, 667);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: MediaQuery(
+          data: MediaQueryData(
+            size: Size(375, 667),
+            textScaler: TextScaler.linear(2),
+            viewInsets: EdgeInsets.only(bottom: 280),
+          ),
+          child: LoginScreen(),
+        ),
+      ),
+    );
+    await tester.ensureVisible(find.text('เข้าสู่ระบบ'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 }
