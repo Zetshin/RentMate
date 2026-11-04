@@ -10,14 +10,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _hidePassword = true;
 
-  void _message(String message) => ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(message)));
-
   void _submit() {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
-      _message('หน้าตัวอย่าง: ยังไม่ได้เชื่อมระบบเข้าสู่ระบบ');
+      Navigator.pushNamedAndRemoveUntil(context, '/start', (_) => false);
     }
   }
 
@@ -61,6 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        const Text(
+                          'โหมดทดลอง: กรอกชื่ออังกฤษและรหัสผ่านใดก็ได้',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Color(0xFFB5B5BF)),
+                        ),
                         const Text(
                           'จัดการเรื่องเช่าให้ง่ายขึ้น',
                           textAlign: TextAlign.center,

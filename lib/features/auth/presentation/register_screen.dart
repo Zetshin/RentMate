@@ -22,11 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('ข้อมูลผ่านการตรวจสอบแล้ว ยังไม่ได้สร้างบัญชีจริง'),
-      ),
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/start', (_) => false);
   }
 
   Widget _visibilityButton(bool hidden, VoidCallback onPressed, String field) =>
@@ -41,10 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('สร้างบัญชี'),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    ),
+    appBar: AppBar(title: const Text('สร้างบัญชี')),
     body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
@@ -58,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      'สร้างบัญชีสำหรับเข้าใช้งาน',
+                      'สร้างบัญชีสำหรับเข้าใช้งาน\nโหมดทดลอง: ยังไม่สร้างบัญชีจริง',
                       style: TextStyle(fontSize: 16, color: Color(0xFFB5B5BF)),
                     ),
                     const SizedBox(height: 32),

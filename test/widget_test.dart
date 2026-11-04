@@ -30,13 +30,7 @@ void main() {
     await tester.ensureVisible(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
     await tester.tap(find.widgetWithText(FilledButton, 'สร้างบัญชี'));
     await tester.pumpAndSettle();
-    expect(
-      find.text('ข้อมูลผ่านการตรวจสอบแล้ว ยังไม่ได้สร้างบัญชีจริง'),
-      findsOneWidget,
-    );
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    expect(find.text('เข้าสู่ระบบ'), findsOneWidget);
+    expect(find.text('เริ่มต้นใช้งาน RentMate'), findsOneWidget);
   });
 
   testWidgets('Login validates fields and toggles password', (tester) async {
@@ -53,10 +47,7 @@ void main() {
     await tester.ensureVisible(find.text('เข้าสู่ระบบ'));
     await tester.tap(find.text('เข้าสู่ระบบ'));
     await tester.pumpAndSettle();
-    expect(
-      find.text('หน้าตัวอย่าง: ยังไม่ได้เชื่อมระบบเข้าสู่ระบบ'),
-      findsOneWidget,
-    );
+    expect(find.text('เริ่มต้นใช้งาน RentMate'), findsOneWidget);
   });
 
   testWidgets('Small phone supports large text and keyboard', (tester) async {
