@@ -1,4 +1,21 @@
 # Miscellaneous
+# Local secrets (commit templates with placeholders only)
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Local database backups; keep SQL migrations tracked
+*.dump
+*.sql.gz
+/backups/
+
 /tmp/
 *.class
 *.log
